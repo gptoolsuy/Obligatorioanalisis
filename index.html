@@ -92,6 +92,21 @@ footer{text-align:center;color:var(--muted);padding:30px}
   font-size:17px;
 }
 
+
+.dictionary-summary{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin:16px 0 22px}
+.dict-kpi{background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px;text-align:center}
+.dict-kpi .big{font-size:28px;font-weight:800;color:var(--primary)}
+.table-wrap{overflow:auto;background:#fff;border:1px solid var(--line);border-radius:14px;margin:14px 0 24px}
+.table-wrap table{min-width:760px}
+.status-kept{display:inline-block;padding:5px 9px;border-radius:999px;background:#e8f7ef;color:#0b6d43;font-weight:800;font-size:12px}
+.status-removed{display:inline-block;padding:5px 9px;border-radius:999px;background:#fdecec;color:#9f261d;font-weight:800;font-size:12px}
+.status-base{display:inline-block;padding:5px 9px;border-radius:999px;background:#eef2f6;color:#4b5b6f;font-weight:800;font-size:12px}
+.status-target{display:inline-block;padding:5px 9px;border-radius:999px;background:#eef4ff;color:#234fae;font-weight:800;font-size:12px}
+.var-accordion{background:#fff;border:1px solid var(--line);border-radius:14px;margin:10px 0;overflow:hidden}
+.var-accordion summary{cursor:pointer;padding:14px 16px;font-weight:800;background:#f8fafc}
+.var-accordion .inside{padding:6px 16px 16px}
+.var-accordion table{font-size:14px}
+
 </style>
 </head>
 <body>
@@ -120,13 +135,14 @@ footer{text-align:center;color:var(--muted);padding:30px}
 <div class="navinner">
   <button class="active" data-target="inicio">Inicio</button>
   <button data-target="datos">1. Base de datos</button>
-  <button data-target="graficos">2. Gráficos</button>
-  <button data-target="modelo">3. Modelo Logit</button>
-  <button data-target="performance">4. Performance</button>
-  <button data-target="umbrales">5. Umbrales</button>
-  <button data-target="costos">6. Costos</button>
-  <button data-target="decision">7. Decisión</button>
-  <button data-target="conclusion">8. Conclusión</button>
+  <button data-target="diccionario">2. Diccionario de variables</button>
+  <button data-target="graficos">3. Gráficos</button>
+  <button data-target="modelo">4. Modelo Logit</button>
+  <button data-target="performance">5. Performance</button>
+  <button data-target="umbrales">6. Umbrales</button>
+  <button data-target="costos">7. Costos</button>
+  <button data-target="decision">8. Decisión</button>
+  <button data-target="conclusion">9. Conclusión</button>
 </div>
 </nav>
 
@@ -138,13 +154,14 @@ footer{text-align:center;color:var(--muted);padding:30px}
   </div>
   <div class="hero-menu">
     <button onclick="go('datos')"><b>1 · Análisis de la base</b>Descripción, calidad, distribución y variables.</button>
-    <button onclick="go('graficos')"><b>2 · Gráficos seleccionados</b>Explorá los principales gráficos del trabajo.</button>
-    <button onclick="go('modelo')"><b>3 · Construcción del Logit</b>Preparación, dummies, selección e interpretación.</button>
-    <button onclick="go('performance')"><b>4 · Evaluación</b>Matriz de confusión, AUC y desempeño.</button>
-    <button onclick="go('umbrales')"><b>5 · Simulador de umbrales</b>Cambiá el corte y observá los errores y métricas.</button>
-    <button onclick="go('costos')"><b>6 · Simulador de costos</b>Cambiá cuánto cuesta un crédito malo y recalculá el umbral óptimo.</button>
-    <button onclick="go('decision')"><b>7 · Regla de decisión</b>Aprobar, revisar o rechazar usando dos cortes configurables.</button>
-    <button onclick="go('conclusion')"><b>8 · Conclusión ejecutiva</b>Lectura financiera final del modelo.</button>
+    <button onclick="go('diccionario')"><b>2 · Diccionario de variables</b>Qué significa cada variable, categorías base y dummies que quedaron o fueron eliminadas.</button>
+    <button onclick="go('graficos')"><b>3 · Gráficos seleccionados</b>Explorá los principales gráficos del trabajo.</button>
+    <button onclick="go('modelo')"><b>4 · Construcción del Logit</b>Preparación, dummies, selección e interpretación.</button>
+    <button onclick="go('performance')"><b>5 · Evaluación</b>Matriz de confusión, AUC y desempeño.</button>
+    <button onclick="go('umbrales')"><b>6 · Simulador de umbrales</b>Cambiá el corte y observá los errores y métricas.</button>
+    <button onclick="go('costos')"><b>7 · Simulador de costos</b>Cambiá cuánto cuesta un crédito malo y recalculá el umbral óptimo.</button>
+    <button onclick="go('decision')"><b>8 · Regla de decisión</b>Aprobar, revisar o rechazar usando dos cortes configurables.</button>
+    <button onclick="go('conclusion')"><b>9 · Conclusión ejecutiva</b>Lectura financiera final del modelo.</button>
   </div>
 </section>
 
@@ -169,8 +186,258 @@ footer{text-align:center;color:var(--muted);padding:30px}
   </div>
 </section>
 
+
+<section id="diccionario" class="section">
+  <h2>2. Diccionario de variables y selección de dummies</h2>
+  <div class="note">
+    Esta sección reproduce la clasificación y las etiquetas utilizadas en el trabajo final. 
+    Para las variables categóricas se aplicó <code>pd.get_dummies(..., drop_first=True)</code>: 
+    la primera categoría de cada variable quedó como <strong>categoría base</strong>. 
+    Luego, el procedimiento <strong>Backward Elimination</strong> eliminó variables con p-valor mayor a 0,05.
+  </div>
+
+  <div class="dictionary-summary">
+    <div class="dict-kpi"><div class="big">21</div><div class="muted">variables originales</div></div>
+    <div class="dict-kpi"><div class="big">3</div><div class="muted">numéricas</div></div>
+    <div class="dict-kpi"><div class="big">17</div><div class="muted">categóricas explicativas</div></div>
+    <div class="dict-kpi"><div class="big">54 → 19</div><div class="muted">variables del modelo completo al reducido</div></div>
+  </div>
+
+  <h3>Descripción de las variables originales</h3>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Variable</th><th>Descripción</th><th>Tipo</th><th>Situación final</th></tr></thead>
+      <tbody><tr><td><code>laufkont</code></td><td>Estado de la cuenta corriente del deudor</td><td>Categórica</td><td><span class="status-kept">3 dummy(s) final(es)</span></td></tr>
+<tr><td><code>laufzeit</code></td><td>Duración del crédito (meses)</td><td>Numérica</td><td><span class="status-kept">Quedó en el modelo</span></td></tr>
+<tr><td><code>moral</code></td><td>Historial de cumplimiento de créditos previos</td><td>Categórica</td><td><span class="status-kept">3 dummy(s) final(es)</span></td></tr>
+<tr><td><code>verw</code></td><td>Propósito del crédito</td><td>Categórica</td><td><span class="status-kept">2 dummy(s) final(es)</span></td></tr>
+<tr><td><code>hoehe</code></td><td>Monto del crédito (DM)</td><td>Numérica</td><td><span class="status-kept">Quedó en el modelo</span></td></tr>
+<tr><td><code>sparkont</code></td><td>Ahorros del deudor</td><td>Categórica</td><td><span class="status-kept">2 dummy(s) final(es)</span></td></tr>
+<tr><td><code>beszeit</code></td><td>Antigüedad laboral con el empleador actual</td><td>Categórica ordinal</td><td><span class="status-kept">1 dummy(s) final(es)</span></td></tr>
+<tr><td><code>rate</code></td><td>Cuota como % del ingreso disponible</td><td>Categórica ordinal</td><td><span class="status-kept">1 dummy(s) final(es)</span></td></tr>
+<tr><td><code>famges</code></td><td>Estado civil y sexo (combinado)</td><td>Categórica</td><td><span class="status-kept">1 dummy(s) final(es)</span></td></tr>
+<tr><td><code>buerge</code></td><td>Existencia de otro deudor o garante</td><td>Categórica</td><td><span class="status-kept">1 dummy(s) final(es)</span></td></tr>
+<tr><td><code>wohnzeit</code></td><td>Años viviendo en la residencia actual</td><td>Categórica ordinal</td><td><span class="status-kept">1 dummy(s) final(es)</span></td></tr>
+<tr><td><code>verm</code></td><td>Propiedad más valiosa del deudor</td><td>Categórica ordinal</td><td><span class="status-removed">Sin dummies finales</span></td></tr>
+<tr><td><code>alter</code></td><td>Edad (años)</td><td>Numérica</td><td><span class="status-removed">Eliminada por backward</span></td></tr>
+<tr><td><code>weitkred</code></td><td>Otros planes de crédito (fuera del banco)</td><td>Categórica</td><td><span class="status-removed">Sin dummies finales</span></td></tr>
+<tr><td><code>wohn</code></td><td>Tipo de vivienda</td><td>Categórica</td><td><span class="status-kept">1 dummy(s) final(es)</span></td></tr>
+<tr><td><code>bishkred</code></td><td>N° de créditos que tiene/tuvo en este banco</td><td>Categórica ordinal</td><td><span class="status-removed">Sin dummies finales</span></td></tr>
+<tr><td><code>beruf</code></td><td>Calidad del empleo</td><td>Categórica ordinal</td><td><span class="status-removed">Sin dummies finales</span></td></tr>
+<tr><td><code>pers</code></td><td>Personas a cargo del deudor</td><td>Categórica</td><td><span class="status-removed">Sin dummies finales</span></td></tr>
+<tr><td><code>telef</code></td><td>Tiene línea de teléfono a su nombre</td><td>Categórica binaria</td><td><span class="status-removed">Sin dummies finales</span></td></tr>
+<tr><td><code>gastarb</code></td><td>Es trabajador extranjero</td><td>Categórica binaria</td><td><span class="status-kept">1 dummy(s) final(es)</span></td></tr>
+<tr><td><code>kredit</code></td><td>Variable objetivo: crédito cumplido (1) o no (0)</td><td>Categórica binaria (target)</td><td><span class="status-target">Variable objetivo</span></td></tr></tbody>
+    </table>
+  </div>
+
+  <div class="note">
+    La variable original <code>kredit</code> está codificada como <strong>1 = crédito bueno</strong> y 
+    <strong>0 = crédito malo</strong>. En el trabajo se recodificó como <code>target</code>, donde 
+    <strong>1 = crédito malo</strong> y <strong>0 = crédito bueno</strong>, para estimar directamente la probabilidad de incumplimiento.
+  </div>
+
+  <h3>Dummies, categorías base y variables eliminadas</h3>
+  <p class="muted">Abrí cada variable para ver exactamente qué categoría representa cada código, cuál fue tomada como base y qué dummies sobrevivieron al modelo reducido.</p>
+  
+<details class="var-accordion">
+  <summary><code>laufkont</code> — Estado de la cuenta corriente del deudor</summary>
+  <div class="inside">
+    <table>
+      <thead><tr><th>Código</th><th>Significado</th><th>Dummy</th><th>Situación en modelo reducido</th></tr></thead>
+      <tbody><tr><td>1</td><td>Sin cuenta corriente</td><td><code>—</code></td><td><span class="status-base">Categoría base</span></td></tr><tr><td>2</td><td>Saldo &lt; 0 DM</td><td><code>laufkont_2</code></td><td><span class="status-kept">Quedó</span></td></tr><tr><td>3</td><td>Saldo 0–200 DM</td><td><code>laufkont_3</code></td><td><span class="status-kept">Quedó</span></td></tr><tr><td>4</td><td>Saldo ≥ 200 DM / salario</td><td><code>laufkont_4</code></td><td><span class="status-kept">Quedó</span></td></tr></tbody>
+    </table>
+  </div>
+</details>
+
+<details class="var-accordion">
+  <summary><code>moral</code> — Historial de cumplimiento de créditos previos</summary>
+  <div class="inside">
+    <table>
+      <thead><tr><th>Código</th><th>Significado</th><th>Dummy</th><th>Situación en modelo reducido</th></tr></thead>
+      <tbody><tr><td>0</td><td>Atrasos en el pasado</td><td><code>—</code></td><td><span class="status-base">Categoría base</span></td></tr><tr><td>1</td><td>Cuenta crítica / otros bancos</td><td><code>moral_1</code></td><td><span class="status-removed">Eliminada</span></td></tr><tr><td>2</td><td>Sin créditos previos / todos pagados</td><td><code>moral_2</code></td><td><span class="status-kept">Quedó</span></td></tr><tr><td>3</td><td>Créditos pagados hasta ahora</td><td><code>moral_3</code></td><td><span class="status-kept">Quedó</span></td></tr><tr><td>4</td><td>Todos los créditos en este banco pagados</td><td><code>moral_4</code></td><td><span class="status-kept">Quedó</span></td></tr></tbody>
+    </table>
+  </div>
+</details>
+
+<details class="var-accordion">
+  <summary><code>verw</code> — Propósito del crédito</summary>
+  <div class="inside">
+    <table>
+      <thead><tr><th>Código</th><th>Significado</th><th>Dummy</th><th>Situación en modelo reducido</th></tr></thead>
+      <tbody><tr><td>0</td><td>Otros</td><td><code>—</code></td><td><span class="status-base">Categoría base</span></td></tr><tr><td>1</td><td>Auto nuevo</td><td><code>verw_1</code></td><td><span class="status-kept">Quedó</span></td></tr><tr><td>2</td><td>Auto usado</td><td><code>verw_2</code></td><td><span class="status-removed">Eliminada</span></td></tr><tr><td>3</td><td>Muebles/equipamiento</td><td><code>verw_3</code></td><td><span class="status-kept">Quedó</span></td></tr><tr><td>4</td><td>Radio/TV</td><td><code>verw_4</code></td><td><span class="status-removed">Eliminada</span></td></tr><tr><td>5</td><td>Electrodomésticos</td><td><code>verw_5</code></td><td><span class="status-removed">Eliminada</span></td></tr><tr><td>6</td><td>Reparaciones</td><td><code>verw_6</code></td><td><span class="status-removed">Eliminada</span></td></tr><tr><td>7</td><td>Educación</td><td><code>verw_7</code></td><td><span class="status-removed">Eliminada</span></td></tr><tr><td>8</td><td>Vacaciones</td><td><code>verw_8</code></td><td><span class="status-removed">Eliminada</span></td></tr><tr><td>9</td><td>Capacitación</td><td><code>verw_9</code></td><td><span class="status-removed">Eliminada</span></td></tr><tr><td>10</td><td>Negocio</td><td><code>verw_10</code></td><td><span class="status-removed">Eliminada</span></td></tr></tbody>
+    </table>
+  </div>
+</details>
+
+<details class="var-accordion">
+  <summary><code>sparkont</code> — Ahorros del deudor</summary>
+  <div class="inside">
+    <table>
+      <thead><tr><th>Código</th><th>Significado</th><th>Dummy</th><th>Situación en modelo reducido</th></tr></thead>
+      <tbody><tr><td>1</td><td>Sin ahorro / desconocido</td><td><code>—</code></td><td><span class="status-base">Categoría base</span></td></tr><tr><td>2</td><td>&lt; 100 DM</td><td><code>sparkont_2</code></td><td><span class="status-removed">Eliminada</span></td></tr><tr><td>3</td><td>100–500 DM</td><td><code>sparkont_3</code></td><td><span class="status-removed">Eliminada</span></td></tr><tr><td>4</td><td>500–1000 DM</td><td><code>sparkont_4</code></td><td><span class="status-kept">Quedó</span></td></tr><tr><td>5</td><td>≥ 1000 DM</td><td><code>sparkont_5</code></td><td><span class="status-kept">Quedó</span></td></tr></tbody>
+    </table>
+  </div>
+</details>
+
+<details class="var-accordion">
+  <summary><code>beszeit</code> — Antigüedad laboral con el empleador actual</summary>
+  <div class="inside">
+    <table>
+      <thead><tr><th>Código</th><th>Significado</th><th>Dummy</th><th>Situación en modelo reducido</th></tr></thead>
+      <tbody><tr><td>1</td><td>Desempleado</td><td><code>—</code></td><td><span class="status-base">Categoría base</span></td></tr><tr><td>2</td><td>&lt; 1 año</td><td><code>beszeit_2</code></td><td><span class="status-removed">Eliminada</span></td></tr><tr><td>3</td><td>1–4 años</td><td><code>beszeit_3</code></td><td><span class="status-removed">Eliminada</span></td></tr><tr><td>4</td><td>4–7 años</td><td><code>beszeit_4</code></td><td><span class="status-kept">Quedó</span></td></tr><tr><td>5</td><td>≥ 7 años</td><td><code>beszeit_5</code></td><td><span class="status-removed">Eliminada</span></td></tr></tbody>
+    </table>
+  </div>
+</details>
+
+<details class="var-accordion">
+  <summary><code>rate</code> — Cuota como % del ingreso disponible</summary>
+  <div class="inside">
+    <table>
+      <thead><tr><th>Código</th><th>Significado</th><th>Dummy</th><th>Situación en modelo reducido</th></tr></thead>
+      <tbody><tr><td>1</td><td>≥ 35% del ingreso</td><td><code>—</code></td><td><span class="status-base">Categoría base</span></td></tr><tr><td>2</td><td>25–35%</td><td><code>rate_2</code></td><td><span class="status-removed">Eliminada</span></td></tr><tr><td>3</td><td>20–25%</td><td><code>rate_3</code></td><td><span class="status-removed">Eliminada</span></td></tr><tr><td>4</td><td>&lt; 20%</td><td><code>rate_4</code></td><td><span class="status-kept">Quedó</span></td></tr></tbody>
+    </table>
+  </div>
+</details>
+
+<details class="var-accordion">
+  <summary><code>famges</code> — Estado civil y sexo (combinado)</summary>
+  <div class="inside">
+    <table>
+      <thead><tr><th>Código</th><th>Significado</th><th>Dummy</th><th>Situación en modelo reducido</th></tr></thead>
+      <tbody><tr><td>1</td><td>Hombre: div./separado</td><td><code>—</code></td><td><span class="status-base">Categoría base</span></td></tr><tr><td>2</td><td>Mujer: no soltera / Hombre: soltero</td><td><code>famges_2</code></td><td><span class="status-removed">Eliminada</span></td></tr><tr><td>3</td><td>Hombre: casado/viudo</td><td><code>famges_3</code></td><td><span class="status-kept">Quedó</span></td></tr><tr><td>4</td><td>Mujer: soltera</td><td><code>famges_4</code></td><td><span class="status-removed">Eliminada</span></td></tr></tbody>
+    </table>
+  </div>
+</details>
+
+<details class="var-accordion">
+  <summary><code>buerge</code> — Existencia de otro deudor o garante</summary>
+  <div class="inside">
+    <table>
+      <thead><tr><th>Código</th><th>Significado</th><th>Dummy</th><th>Situación en modelo reducido</th></tr></thead>
+      <tbody><tr><td>1</td><td>Ninguno</td><td><code>—</code></td><td><span class="status-base">Categoría base</span></td></tr><tr><td>2</td><td>Co-solicitante</td><td><code>buerge_2</code></td><td><span class="status-removed">Eliminada</span></td></tr><tr><td>3</td><td>Garante</td><td><code>buerge_3</code></td><td><span class="status-kept">Quedó</span></td></tr></tbody>
+    </table>
+  </div>
+</details>
+
+<details class="var-accordion">
+  <summary><code>wohnzeit</code> — Años viviendo en la residencia actual</summary>
+  <div class="inside">
+    <table>
+      <thead><tr><th>Código</th><th>Significado</th><th>Dummy</th><th>Situación en modelo reducido</th></tr></thead>
+      <tbody><tr><td>1</td><td>&lt; 1 año</td><td><code>—</code></td><td><span class="status-base">Categoría base</span></td></tr><tr><td>2</td><td>1–4 años</td><td><code>wohnzeit_2</code></td><td><span class="status-kept">Quedó</span></td></tr><tr><td>3</td><td>4–7 años</td><td><code>wohnzeit_3</code></td><td><span class="status-removed">Eliminada</span></td></tr><tr><td>4</td><td>≥ 7 años</td><td><code>wohnzeit_4</code></td><td><span class="status-removed">Eliminada</span></td></tr></tbody>
+    </table>
+  </div>
+</details>
+
+<details class="var-accordion">
+  <summary><code>verm</code> — Propiedad más valiosa del deudor</summary>
+  <div class="inside">
+    <table>
+      <thead><tr><th>Código</th><th>Significado</th><th>Dummy</th><th>Situación en modelo reducido</th></tr></thead>
+      <tbody><tr><td>1</td><td>Sin propiedad / desconocido</td><td><code>—</code></td><td><span class="status-base">Categoría base</span></td></tr><tr><td>2</td><td>Auto u otro</td><td><code>verm_2</code></td><td><span class="status-removed">Eliminada</span></td></tr><tr><td>3</td><td>Ahorro inmob. / seguro de vida</td><td><code>verm_3</code></td><td><span class="status-removed">Eliminada</span></td></tr><tr><td>4</td><td>Inmueble</td><td><code>verm_4</code></td><td><span class="status-removed">Eliminada</span></td></tr></tbody>
+    </table>
+  </div>
+</details>
+
+<details class="var-accordion">
+  <summary><code>weitkred</code> — Otros planes de crédito (fuera del banco)</summary>
+  <div class="inside">
+    <table>
+      <thead><tr><th>Código</th><th>Significado</th><th>Dummy</th><th>Situación en modelo reducido</th></tr></thead>
+      <tbody><tr><td>1</td><td>Banco</td><td><code>—</code></td><td><span class="status-base">Categoría base</span></td></tr><tr><td>2</td><td>Comercios</td><td><code>weitkred_2</code></td><td><span class="status-removed">Eliminada</span></td></tr><tr><td>3</td><td>Ninguno</td><td><code>weitkred_3</code></td><td><span class="status-removed">Eliminada</span></td></tr></tbody>
+    </table>
+  </div>
+</details>
+
+<details class="var-accordion">
+  <summary><code>wohn</code> — Tipo de vivienda</summary>
+  <div class="inside">
+    <table>
+      <thead><tr><th>Código</th><th>Significado</th><th>Dummy</th><th>Situación en modelo reducido</th></tr></thead>
+      <tbody><tr><td>1</td><td>Gratuita / sin costo</td><td><code>—</code></td><td><span class="status-base">Categoría base</span></td></tr><tr><td>2</td><td>Alquiler</td><td><code>wohn_2</code></td><td><span class="status-kept">Quedó</span></td></tr><tr><td>3</td><td>Propia</td><td><code>wohn_3</code></td><td><span class="status-removed">Eliminada</span></td></tr></tbody>
+    </table>
+  </div>
+</details>
+
+<details class="var-accordion">
+  <summary><code>bishkred</code> — N° de créditos que tiene/tuvo en este banco</summary>
+  <div class="inside">
+    <table>
+      <thead><tr><th>Código</th><th>Significado</th><th>Dummy</th><th>Situación en modelo reducido</th></tr></thead>
+      <tbody><tr><td>1</td><td>1 crédito</td><td><code>—</code></td><td><span class="status-base">Categoría base</span></td></tr><tr><td>2</td><td>2–3</td><td><code>bishkred_2</code></td><td><span class="status-removed">Eliminada</span></td></tr><tr><td>3</td><td>4–5</td><td><code>bishkred_3</code></td><td><span class="status-removed">Eliminada</span></td></tr><tr><td>4</td><td>≥ 6</td><td><code>bishkred_4</code></td><td><span class="status-removed">Eliminada</span></td></tr></tbody>
+    </table>
+  </div>
+</details>
+
+<details class="var-accordion">
+  <summary><code>beruf</code> — Calidad del empleo</summary>
+  <div class="inside">
+    <table>
+      <thead><tr><th>Código</th><th>Significado</th><th>Dummy</th><th>Situación en modelo reducido</th></tr></thead>
+      <tbody><tr><td>1</td><td>Desempleado/no calif. - no residente</td><td><code>—</code></td><td><span class="status-base">Categoría base</span></td></tr><tr><td>2</td><td>No calificado - residente</td><td><code>beruf_2</code></td><td><span class="status-removed">Eliminada</span></td></tr><tr><td>3</td><td>Calificado / oficial</td><td><code>beruf_3</code></td><td><span class="status-removed">Eliminada</span></td></tr><tr><td>4</td><td>Gerente / autónomo / muy calificado</td><td><code>beruf_4</code></td><td><span class="status-removed">Eliminada</span></td></tr></tbody>
+    </table>
+  </div>
+</details>
+
+<details class="var-accordion">
+  <summary><code>pers</code> — Personas a cargo del deudor</summary>
+  <div class="inside">
+    <table>
+      <thead><tr><th>Código</th><th>Significado</th><th>Dummy</th><th>Situación en modelo reducido</th></tr></thead>
+      <tbody><tr><td>1</td><td>3 o más personas a cargo</td><td><code>—</code></td><td><span class="status-base">Categoría base</span></td></tr><tr><td>2</td><td>0 a 2 personas a cargo</td><td><code>pers_2</code></td><td><span class="status-removed">Eliminada</span></td></tr></tbody>
+    </table>
+  </div>
+</details>
+
+<details class="var-accordion">
+  <summary><code>telef</code> — Tiene línea de teléfono a su nombre</summary>
+  <div class="inside">
+    <table>
+      <thead><tr><th>Código</th><th>Significado</th><th>Dummy</th><th>Situación en modelo reducido</th></tr></thead>
+      <tbody><tr><td>1</td><td>No</td><td><code>—</code></td><td><span class="status-base">Categoría base</span></td></tr><tr><td>2</td><td>Sí</td><td><code>telef_2</code></td><td><span class="status-removed">Eliminada</span></td></tr></tbody>
+    </table>
+  </div>
+</details>
+
+<details class="var-accordion">
+  <summary><code>gastarb</code> — Es trabajador extranjero</summary>
+  <div class="inside">
+    <table>
+      <thead><tr><th>Código</th><th>Significado</th><th>Dummy</th><th>Situación en modelo reducido</th></tr></thead>
+      <tbody><tr><td>1</td><td>Sí, extranjero</td><td><code>—</code></td><td><span class="status-base">Categoría base</span></td></tr><tr><td>2</td><td>No extranjero</td><td><code>gastarb_2</code></td><td><span class="status-kept">Quedó</span></td></tr></tbody>
+    </table>
+  </div>
+</details>
+
+  <h3>Variables que quedaron en el modelo reducido</h3>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Tipo</th><th>Variables finales</th></tr></thead>
+      <tbody>
+        <tr><td>Numéricas</td><td><code>laufzeit</code>, <code>hoehe</code></td></tr>
+        <tr><td>Dummies</td><td>
+          <code>laufkont_2</code>, <code>laufkont_3</code>, <code>laufkont_4</code>,
+          <code>moral_2</code>, <code>moral_3</code>, <code>moral_4</code>,
+          <code>verw_1</code>, <code>verw_3</code>,
+          <code>sparkont_4</code>, <code>sparkont_5</code>,
+          <code>beszeit_4</code>, <code>rate_4</code>, <code>famges_3</code>,
+          <code>buerge_3</code>, <code>wohnzeit_2</code>, <code>wohn_2</code>,
+          <code>gastarb_2</code>
+        </td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="note warn">
+    <strong>Importante:</strong> que una dummy haya sido eliminada no significa necesariamente que toda la variable original no tenga valor.
+    El backward selecciona categorías individuales según su significancia estadística frente a la categoría base.
+    En cambio, <code>alter</code> sí fue eliminada como variable numérica completa.
+  </div>
+</section>
+
 <section id="graficos" class="section">
-  <h2>2. Gráficos seleccionados</h2>
+  <h2>3. Gráficos seleccionados</h2>
   <div class="control">
     <label for="graphSelect">Seleccioná un gráfico</label>
     <select id="graphSelect"></select>
@@ -183,7 +450,7 @@ footer{text-align:center;color:var(--muted);padding:30px}
 </section>
 
 <section id="modelo" class="section">
-  <h2>3. Construcción e interpretación del modelo Logit</h2>
+  <h2>4. Construcción e interpretación del modelo Logit</h2>
   <div class="grid">
     <div class="card"><h3>Modelo completo</h3><div class="kpi">54</div><div class="muted">variables/dummies · AIC 1003,0 · Pseudo R² 0,269</div></div>
     <div class="card"><h3>Modelo reducido</h3><div class="kpi">19</div><div class="muted">variables · AIC 974,2 · Pseudo R² 0,235</div></div>
@@ -203,7 +470,7 @@ footer{text-align:center;color:var(--muted);padding:30px}
 </section>
 
 <section id="performance" class="section">
-  <h2>4. Evaluación del modelo</h2>
+  <h2>5. Evaluación del modelo</h2>
   <div class="grid">
     <div class="card"><h3>AUC Train</h3><div class="kpi">0,834</div><div class="muted">Capacidad de discriminación</div></div>
     <div class="card"><h3>AUC Test</h3><div class="kpi">0,770</div><div class="muted">Desempeño sobre datos nuevos</div></div>
@@ -220,7 +487,7 @@ footer{text-align:center;color:var(--muted);padding:30px}
 </section>
 
 <section id="umbrales" class="section">
-  <h2>5. Simulador interactivo de umbrales</h2>
+  <h2>6. Simulador interactivo de umbrales</h2>
   <p class="muted">Los valores se calculan a partir de los resultados reales del conjunto TEST de la notebook (210 buenos y 90 malos), evaluados cada 0,05.</p>
   <div class="controls">
     <div class="control">
@@ -246,7 +513,7 @@ footer{text-align:center;color:var(--muted);padding:30px}
 </section>
 
 <section id="costos" class="section">
-  <h2>6. Simulador de costos financieros</h2>
+  <h2>7. Simulador de costos financieros</h2>
   <div class="note">
     En el trabajo se asumió que <strong>aprobar un crédito que termina siendo malo cuesta 5 veces</strong> lo que cuesta rechazar un crédito bueno. Acá podés cambiar ese supuesto y ver cómo cambia el umbral óptimo.
   </div>
@@ -277,7 +544,7 @@ footer{text-align:center;color:var(--muted);padding:30px}
 </section>
 
 <section id="decision" class="section">
-  <h2>7. Regla de decisión configurable</h2>
+  <h2>8. Regla de decisión configurable</h2>
   <p>La propuesta original fue: <strong>&lt; 0,20 aprobar</strong>, <strong>0,20–0,40 revisión manual</strong> y <strong>≥ 0,40 rechazar o exigir garantías</strong>.</p>
   <div class="controls">
     <div class="control">
@@ -298,7 +565,7 @@ footer{text-align:center;color:var(--muted);padding:30px}
 </section>
 
 <section id="conclusion" class="section">
-  <h2>8. Conclusión ejecutiva</h2>
+  <h2>9. Conclusión ejecutiva</h2>
   <div class="card">
     <p>El modelo Logit desarrollado tiene una capacidad razonable para diferenciar créditos buenos y malos y puede utilizarse como <strong>herramienta de apoyo</strong> para ordenar solicitantes según riesgo.</p>
     <p>El modelo reconoce mejor a los créditos buenos que a los malos con el umbral estándar de 0,50. En TEST identifica correctamente 179 de 210 buenos, pero solo 46 de 90 malos; por eso quedan 44 créditos malos sin detectar.</p>
