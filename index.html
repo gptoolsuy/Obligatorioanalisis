@@ -107,6 +107,39 @@ footer{text-align:center;color:var(--muted);padding:30px}
 .var-accordion .inside{padding:6px 16px 16px}
 .var-accordion table{font-size:14px}
 
+
+/* Navegación compacta: sin barra horizontal */
+.navinner{
+  max-width:1380px;
+  display:flex;
+  gap:6px;
+  overflow:visible;
+  padding:10px 12px;
+}
+.navinner button{
+  flex:1 1 auto;
+  min-width:0;
+  white-space:nowrap;
+  padding:10px 9px;
+  font-size:14px;
+  line-height:1.15;
+}
+@media (max-width:1050px){
+  .navinner{
+    flex-wrap:wrap;
+  }
+  .navinner button{
+    flex:1 1 150px;
+  }
+}
+@media (max-width:600px){
+  .navinner button{
+    flex:1 1 120px;
+    font-size:13px;
+    padding:9px 7px;
+  }
+}
+
 </style>
 </head>
 <body>
@@ -135,7 +168,7 @@ footer{text-align:center;color:var(--muted);padding:30px}
 <div class="navinner">
   <button class="active" data-target="inicio">Inicio</button>
   <button data-target="datos">1. Base de datos</button>
-  <button data-target="diccionario">2. Diccionario de variables</button>
+  <button data-target="diccionario">2. Diccionario</button>
   <button data-target="graficos">3. Gráficos</button>
   <button data-target="modelo">4. Modelo Logit</button>
   <button data-target="performance">5. Performance</button>
